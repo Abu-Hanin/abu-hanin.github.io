@@ -1,4 +1,6 @@
-const CACHE_NAME = 'blotrade-v25';
+importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
+
+const CACHE_NAME = 'blotrade-v27';
 const urlsToCache = [
   './',
   './index.html',
