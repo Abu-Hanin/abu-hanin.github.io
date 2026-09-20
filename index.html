@@ -549,7 +549,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 /* ============================================================
    نظام التحديث التلقائي
    ============================================================ */
-const APP_VERSION = '2026.09.20.2000';
+const APP_VERSION = '2026.09.20.2100';
 
 (function forceUpdate(){
   try{
@@ -2055,8 +2055,7 @@ async function boot(){
   updateNotifBadge();
 }
 boot();
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v='+APP_VERSION).catch(()=>{});}
-</script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});}</script>
 
 </body>
 </html>
