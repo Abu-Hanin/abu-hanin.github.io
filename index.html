@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.21.0200';
+const APP_VERSION = '2026.09.21.0300';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -917,7 +917,7 @@ let admTab='users';let userFilter='all';let userSearch='';let setTab='pay';
 async function sendPushNotification(title, body, url){
   if(!ONESIGNAL_REST_KEY)return {ok:false,error:'REST API Key مش موجود في الإعدادات'};
   try{
-    const r=await fetch('https://api.onesignal.com/notifications',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Key '+ONESIGNAL_REST_KEY},body:JSON.stringify({app_id:ONESIGNAL_APP_ID,included_segments:['Subscribed Users'],headings:{en:title,ar:title},contents:{en:body,ar:body},url:url||'https://abu-hanin.github.io/',chrome_web_icon:'https://abu-hanin.github.io/icon-192.png'})});
+    const r=await fetch('https://api.onesignal.com/notifications',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Key '+ONESIGNAL_REST_KEY},body:JSON.stringify({app_id:ONESIGNAL_APP_ID,included_segments:['All'],headings:{en:title,ar:title},contents:{en:body,ar:body},url:url||'https://abu-hanin.github.io/',chrome_web_icon:'https://abu-hanin.github.io/icon-192.png'})});
     const data=await r.json();
     if(r.ok)return {ok:true,data};
     return {ok:false,error:data.errors?data.errors.join(', '):'فشل الإرسال'};
