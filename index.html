@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.23.1000';
+const APP_VERSION = '2026.09.23.1100';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -618,8 +618,6 @@ async function loadProfile(){
   return created;
 }
 async function refreshUser(){AUTH=(await sb.auth.getUser()).data.user;if(AUTH){CU=await loadProfile()}return CU}
-
-/* ⭐ التعديل 1: إضافة tag is_admin للأدمن عشان الإشعارات توصله على كل أجهزته */
 async function syncOneSignalUser(){
   if(!AUTH)return;
   try{
@@ -635,7 +633,6 @@ async function syncOneSignalUser(){
     })
   }catch(e){}
 }
-
 const VALID_PAGES=['home','recs','words','chat','prof','dep','gold','bubble','learn','course','market','winner','notifications','admin'];
 
 function showAuth(){$('#auth').classList.remove('hide');$('#app').classList.remove('on');hideBootLoader();}
@@ -932,33 +929,16 @@ window.renderGoldPage=function(c){c.innerHTML=`<h2 class="pt"><i class="fas fa-c
 
 let admTab='users';let userFilter='all';let userSearch='';let setTab='pay';
 
-/* ⭐ التعديل 2: sendPushNotification بتستخدم Edge Function بدل OneSignal مباشرة */
 async function sendPushNotification(title, body, url, target='all'){
-  if(!ONESIGNAL_REST_KEY)return {ok:false,error:'REST API Key مش موجود في الإعدادات'};
   try{
-    const payload={
-      app_id:ONESIGNAL_APP_ID,
-      headings:{en:title,ar:title},
-      contents:{en:body,ar:body},
-      url:url||'https://abu-hanin.github.io/',
-      chrome_web_icon:'https://abu-hanin.github.io/icon-192.png'
-    };
-    if(target==='admin'){
-      payload.filters=[{field:'tag',key:'is_admin',relation:'=',value:'true'}];
-    }else if(typeof target==='string'&&target.startsWith('user:')){
-      payload.include_aliases={external_id:[target.slice(5)]};
-      payload.target_channel='push';
-    }else{
-      payload.included_segments=['All'];
-    }
-    const r=await fetch('https://api.onesignal.com/notifications',{
+    const r=await fetch(PUSH_FN_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Key '+ONESIGNAL_REST_KEY},
-      body:JSON.stringify(payload)
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({title,body,url,target})
     });
     const data=await r.json();
     if(r.ok)return {ok:true,data};
-    return {ok:false,error:data.errors?data.errors.join(', '):'فشل الإرسال'};
+    return {ok:false,error:(data&&data.errors)?data.errors.join(', '):'فشل الإرسال'};
   }catch(e){return {ok:false,error:e.message};}
 }
 async function sendPushToAdmin(title, body, url){
@@ -972,10 +952,11 @@ async function admPush(b){
     if(!title||!body)return toast('أكمل البيانات','er');
     const btn=$('#sendPushBtn');btn.disabled=true;btn.innerHTML='<span class="ldr"></span> جاري الإرسال...';
     $('#pushResult').textContent='';
-    const result=await sendPushNotification(title,body,url,'all');
+    const r1=await sendPushNotification(title,body,url,'all');
+    const r2=await sendPushNotification(title,body,url,'admin');
     btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> إرسال الإشعار';
-    if(result.ok){$('#pushResult').innerHTML='<span style="color:var(--gr)">✅ تم الإرسال بنجاح</span>';toast('✅ تم إرسال الإشعار','ok');}
-    else{$('#pushResult').innerHTML='<span style="color:var(--rd)">❌ '+result.error+'</span>';toast('فشل الإرسال','er');}
+    if(r1.ok||r2.ok){$('#pushResult').innerHTML='<span style="color:var(--gr)">✅ تم الإرسال بنجاح (للجميع + للأدمن)</span>';toast('✅ تم إرسال الإشعار','ok');}
+    else{$('#pushResult').innerHTML='<span style="color:var(--rd)">❌ '+(r1.error||r2.error||'فشل')+'</span>';toast('فشل الإرسال','er');}
   };
 }
 
@@ -1061,8 +1042,6 @@ async function admRecs(b){
 window.delReco=async function(id){if(!confirm('حذف؟'))return;const {error}=await sb.from('recommendations').delete().eq('id',id);if(error)return toast(error.message,'er');toast('تم الحذف','ok');admRenderBody()};
 window.toggleRecoHidden=async function(id,hidden){const {error}=await sb.from('recommendations').update({hidden:!hidden}).eq('id',id);if(error)return toast(error.message,'er');toast(hidden?'تم الإظهار':'تم الإخفاء','ok');admRenderBody()};
 window.editReco=async function(id){const {data:r}=await sb.from('recommendations').select('*').eq('id',id).single();if(!r)return;openM(`<button class="mc" onclick="closeM()">✕</button><h3><i class="fas fa-edit"></i> تعديل التوصية</h3><div style="display:flex;flex-direction:column;gap:12px;"><div><label class="lb">العملة</label><input type="text" class="ip" id="eSym" value="${esc(r.symbol)}" style="text-transform:uppercase;"></div><div><label class="lb">منطقة الدخول</label><input type="text" class="ip" id="eEnt" value="${esc(r.entry||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;"><div><label class="lb">هدف1</label><input type="text" class="ip" id="eT1" value="${esc(r.target1||'')}"></div><div><label class="lb">هدف2</label><input type="text" class="ip" id="eT2" value="${esc(r.target2||'')}"></div><div><label class="lb">هدف3</label><input type="text" class="ip" id="eT3" value="${esc(r.target3||'')}"></div></div><div><label class="lb">وقف الخسارة</label><input type="text" class="ip" id="eSL" value="${esc(r.stop_loss||'')}"></div><div><label class="lb">ملاحظات</label><textarea class="ip" id="eNotes">${esc(r.notes||'')}</textarea></div><button class="bp" id="saveEdit"><i class="fas fa-save"></i> حفظ</button></div>`);$('#saveEdit').onclick=async()=>{const sym=$('#eSym').value.trim().toUpperCase();if(!sym)return toast('أدخل العملة','er');const {error}=await sb.from('recommendations').update({symbol:sym,entry:$('#eEnt').value.trim(),target1:$('#eT1').value.trim(),target2:$('#eT2').value.trim(),target3:$('#eT3').value.trim(),stop_loss:$('#eSL').value.trim(),notes:$('#eNotes').value.trim()}).eq('id',id);if(error)return toast(error.message,'er');closeM();toast('تم التعديل','ok');admRenderBody()}};
-
-/* ⭐ التعديل 3: addRecoModal بتبعت إشعارين (للجميع + للأدمن) */
 function addRecoModal(){openM(`<button class="mc" onclick="closeM()">✕</button><h3><i class="fas fa-chart-line"></i> توصية جديدة</h3><div style="display:flex;flex-direction:column;gap:12px;"><div><label class="lb">العملة</label><input type="text" class="ip" id="nSym" placeholder="BTC" style="text-transform:uppercase;"></div><div><label class="lb">منطقة الدخول</label><input type="text" class="ip" id="nEnt" placeholder="34000 - 34500"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;"><div><label class="lb">هدف1</label><input type="text" class="ip" id="nT1"></div><div><label class="lb">هدف2</label><input type="text" class="ip" id="nT2"></div><div><label class="lb">هدف3</label><input type="text" class="ip" id="nT3"></div></div><div><label class="lb">وقف الخسارة</label><input type="text" class="ip" id="nSL"></div><div><label class="lb">ملاحظات</label><textarea class="ip" id="nNotes"></textarea></div><button class="bp" id="saveReco"><i class="fas fa-paper-plane"></i> نشر</button></div>`);$('#saveReco').onclick=async()=>{const sym=$('#nSym').value.trim().toUpperCase();const ent=$('#nEnt').value.trim();if(!sym||!ent)return toast('أكمل البيانات','er');const btn=$('#saveReco');btn.disabled=true;btn.innerHTML='<span class="ldr"></span>';const {error}=await sb.from('recommendations').insert({symbol:sym,entry:ent,target1:$('#nT1').value.trim(),target2:$('#nT2').value.trim(),target3:$('#nT3').value.trim(),stop_loss:$('#nSL').value.trim(),notes:$('#nNotes').value.trim()});btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> نشر';if(error)return toast(error.message,'er');await sb.from('notifications').insert({title:'📈 توصية جديدة',body:'تم نزول توصية جديدة على منصة Blo Trade 24 الآن',type:'reco',is_public:true});try{await sendPushNotification('📈 توصية جديدة','تم نزول توصية جديدة على منصة Blo Trade 24 الآن','https://abu-hanin.github.io/#recs','all');}catch(e){}try{await sendPushNotification('📈 توصية جديدة','تم نزول توصية جديدة على منصة Blo Trade 24 الآن','https://abu-hanin.github.io/#recs','admin');}catch(e){}closeM();toast('✅ تم النشر والإشعار','ok');admRenderBody()}}
 
 async function admWords(b){
@@ -1078,8 +1057,6 @@ async function admWords(b){
 window.delWord=async function(id){if(!confirm('حذف؟'))return;const {error}=await sb.from('words').delete().eq('id',id);if(error)return toast(error.message,'er');toast('تم الحذف','ok');admRenderBody()};
 window.toggleWordHidden=async function(id,hidden){const {error}=await sb.from('words').update({hidden:!hidden}).eq('id',id);if(error)return toast(error.message,'er');toast(hidden?'تم الإظهار':'تم الإخفاء','ok');admRenderBody()};
 window.editWord=async function(id){const {data:w}=await sb.from('words').select('*').eq('id',id).single();if(!w)return;openM(`<button class="mc" onclick="closeM()">✕</button><h3><i class="fas fa-edit"></i> تعديل الكلمة</h3><div style="display:flex;flex-direction:column;gap:12px;"><div><label class="lb">الكلمة</label><input type="text" class="ip" id="eW" value="${esc(w.word)}" style="text-transform:uppercase;text-align:center;"></div><div><label class="lb">تلميح</label><textarea class="ip" id="eWh">${esc(w.hint||'')}</textarea></div><button class="bp" id="saveWE"><i class="fas fa-save"></i> حفظ</button></div>`);$('#saveWE').onclick=async()=>{const wv=$('#eW').value.trim().toUpperCase();if(!wv)return toast('أدخل الكلمة','er');const {error}=await sb.from('words').update({word:wv,hint:$('#eWh').value.trim()}).eq('id',id);if(error)return toast(error.message,'er');closeM();toast('تم التعديل','ok');admRenderBody()}};
-
-/* ⭐ التعديل 4: addWordModal بتبعت إشعارين (للجميع + للأدمن) */
 function addWordModal(){openM(`<button class="mc" onclick="closeM()">✕</button><h3><i class="fas fa-calendar-day"></i> كلمة اليوم</h3><div style="display:flex;flex-direction:column;gap:12px;"><div><label class="lb">الكلمة</label><input type="text" class="ip" id="nW" placeholder="WODL" style="text-transform:uppercase;text-align:center;"></div><div><label class="lb">تلميح</label><textarea class="ip" id="nWh"></textarea></div><button class="bp" id="saveW"><i class="fas fa-paper-plane"></i> نشر</button></div>`);$('#saveW').onclick=async()=>{const wv=$('#nW').value.trim().toUpperCase();if(!wv)return toast('أدخل الكلمة','er');const btn=$('#saveW');btn.disabled=true;btn.innerHTML='<span class="ldr"></span>';const {error}=await sb.from('words').insert({word:wv,hint:$('#nWh').value.trim()});btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> نشر';if(error)return toast(error.message,'er');await sb.from('notifications').insert({title:'📅 كلمة اليوم',body:'تم نزول كلمة اليوم الجديدة',type:'word',is_public:true});try{await sendPushNotification('📅 كلمة اليوم','تم نزول كلمة اليوم الجديدة على منصة Blo Trade 24','https://abu-hanin.github.io/#words','all');}catch(e){}try{await sendPushNotification('📅 كلمة اليوم','تم نزول كلمة اليوم الجديدة على منصة Blo Trade 24','https://abu-hanin.github.io/#words','admin');}catch(e){}closeM();toast('✅ تم النشر والإشعار','ok');admRenderBody()}}
 
 let adminChatUserId=null;let msgFilter='all';let msgSearch='';let adminMsgsChannel=null;let admChatChannel=null;
