@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.21.1100';
+const APP_VERSION = '2026.09.22.100';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -558,8 +558,9 @@ setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classL
       if(stored){
         if('caches' in window){caches.keys().then(names=>{names.forEach(name=>caches.delete(name));}).catch(()=>{});}
         if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(regs=>{regs.forEach(reg=>{try{reg.update();reg.unregister();}catch(e){}});}).catch(()=>{});}
-        setTimeout(()=>{const url = new URL(window.location.href);url.searchParams.set('_v', Date.now());window.location.replace(url.toString());}, 300);
-        return;
+        setTimeout(()=>{
+          try{const url=new URL(window.location.href);url.search='';url.hash='';window.location.replace(url.toString());}catch(e){}
+        }, 300);
       }
     }
   }catch(e){}
