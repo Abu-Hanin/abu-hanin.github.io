@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.22.100';
+const APP_VERSION = '2026.09.22.200';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -618,8 +618,20 @@ async function loadProfile(){
   return created;
 }
 async function refreshUser(){AUTH=(await sb.auth.getUser()).data.user;if(AUTH){CU=await loadProfile()}return CU}
-async function syncOneSignalUser(){if(!AUTH)return;try{window.OneSignalDeferred.push(async function(OneSignal){try{await OneSignal.login(AUTH.id);if(AUTH.email)await OneSignal.User.addTag('email',AUTH.email)}catch(e){}})}catch(e){}}
-
+async function syncOneSignalUser(){
+  if(!AUTH)return;
+  try{
+    window.OneSignalDeferred.push(async function(OneSignal){
+      try{
+        await OneSignal.login(AUTH.id);
+        if(AUTH.email)await OneSignal.User.addTag('email',AUTH.email);
+        if(AUTH.email&&AUTH.email.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+          await OneSignal.User.addAlias('external_id','admin');
+        }
+      }catch(e){}
+    })
+  }catch(e){}
+}
 const VALID_PAGES=['home','recs','words','chat','prof','dep','gold','bubble','learn','course','market','winner','notifications','admin'];
 
 function showAuth(){$('#auth').classList.remove('hide');$('#app').classList.remove('on');hideBootLoader();}
