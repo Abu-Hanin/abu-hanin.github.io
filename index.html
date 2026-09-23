@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.23.2400';
+const APP_VERSION = '2026.09.23.2500';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -601,7 +601,17 @@ function hideBootLoader(){const b=document.getElementById('bootLoader');if(!b)re
 
 /* OneSignal */
 window.OneSignalDeferred=window.OneSignalDeferred||[];
-OneSignalDeferred.push(async function(OneSignal){try{await OneSignal.init({appId:ONESIGNAL_APP_ID,allowLocalhostAsSecureOrigin:true,notifyButton:{enable:false},serviceWorkerPath:'/sw.js',serviceWorkerParam:{scope:'/'},promptOptions:{slidedown:{enable:true,autoPrompt:true,actionMessage:'تفعيل الإشعارات لتصلك التوصيات والإشعارات فوراً'}}});try{await OneSignal.Notifications.requestPermission()}catch(e){}if(AUTH){try{await OneSignal.login(AUTH.id);if(AUTH.email)await OneSignal.User.addTag('email',AUTH.email)}catch(e){}}}catch(e){}});
+OneSignalDeferred.push(async function(OneSignal){
+  try{
+    await OneSignal.init({
+      appId:ONESIGNAL_APP_ID,
+      allowLocalhostAsSecureOrigin:true,
+      notifyButton:{enable:false},
+      serviceWorkerPath:'/OneSignalSDKWorker.js',
+      serviceWorkerParam:{scope:'/'},
+      promptOptions:{slidedown:{enable:true,autoPrompt:true,actionMessage:'تفعيل الإشعارات لتصلك التوصيات والإشعارات فوراً'}}
+    });
+  ...try{await OneSignal.Notifications.requestPermission()}catch(e){}if(AUTH){try{await OneSignal.login(AUTH.id);if(AUTH.email)await OneSignal.User.addTag('email',AUTH.email)}catch(e){}}}catch(e){}});
 
 async function loadProfile(){
   if(!AUTH)return null;
