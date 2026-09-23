@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.23.2000';
+const APP_VERSION = '2026.09.23.2100';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -942,10 +942,12 @@ async function sendPushNotification(title, body, url, target='all'){
       url:url||'https://abu-hanin.github.io/',
       chrome_web_icon:'https://abu-hanin.github.io/icon-192.png'
     };
+    // إذا كان الهدف هو الأدمن، استخدم external_id
     if(target==='admin'){
       payload.include_aliases={external_id:['admin']};
       payload.target_channel='push';
-    }else{
+    } else {
+      // لجميع المستخدمين
       payload.included_segments=['All'];
     }
     const r=await fetch('https://api.onesignal.com/notifications',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Key '+ONESIGNAL_REST_KEY},body:JSON.stringify(payload)});
