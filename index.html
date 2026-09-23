@@ -546,7 +546,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.23.2200';
+const APP_VERSION = '2026.09.23.2400';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -931,9 +931,9 @@ let admTab='users';let userFilter='all';let userSearch='';let setTab='pay';
 
 /* ⭐ التعديل: sendPushNotification تقبل target وتستخدم include_aliases للأدمن */
 async function sendPushNotification(title, body, url, target='all'){
-  if(!ONESIGNAL_REST_KEY)return {ok:false,error:'REST API Key مش موجود في الإعدادات'};
+  if(!ONESIGNAL_REST_KEY)return {ok:false,error:'REST API Key مش موجود'};
   try{
-    const uniq='grp_'+Date.now()+'_'+Math.random().toString(36).slice(2,10);
+    const uniq='grp_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
     const payload={
       app_id:ONESIGNAL_APP_ID,
       headings:{en:title,ar:title},
@@ -942,7 +942,8 @@ async function sendPushNotification(title, body, url, target='all'){
       chrome_web_icon:'https://abu-hanin.github.io/icon-192.png',
       android_group:uniq,
       thread_id:uniq,
-      android_group_message:{en:'$[notif_count] new notifications',ar:'$[notif_count] إشعارات جديدة'}
+      collapse_id:uniq,
+      web_push_topic:uniq
     };
     if(target==='admin'){
       payload.include_aliases={external_id:['admin']};
