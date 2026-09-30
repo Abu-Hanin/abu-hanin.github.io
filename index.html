@@ -507,52 +507,60 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 .done-info .di-txt b{color:var(--gr);font-weight:800}
 .done-info .di-txt .warn{color:var(--rd);font-weight:700}
 
-/* ============ VIP Lock Screen (للمشتركين فقط) ============ */
-.vip-lock{position:relative;text-align:center;padding:44px 24px 36px;background:linear-gradient(145deg,#1a1f2e 0%,#14171d 100%);border:2px solid rgba(240,185,11,.35);border-radius:24px;overflow:hidden;max-width:560px;margin:0 auto;box-shadow:0 20px 50px -20px rgba(240,185,11,.2)}
+/* ============ VIP Lock Screen (للمشتركين فقط) — مقاسات مصغّرة ============ */
+.vip-lock{position:relative;text-align:center;padding:26px 20px 22px;background:linear-gradient(145deg,#1a1f2e 0%,#14171d 100%);border:2px solid rgba(240,185,11,.35);border-radius:18px;overflow:hidden;max-width:440px;margin:0 auto;box-shadow:0 15px 35px -18px rgba(240,185,11,.2)}
 .vip-lock::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 50%,rgba(240,185,11,.1) 0%,transparent 50%);animation:priceGlow 5s ease-in-out infinite;pointer-events:none}
 .vip-lock>*{position:relative;z-index:1}
-.vip-lock .vip-icon{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;font-size:2.6rem;color:#0b0e11;margin:0 auto 20px;box-shadow:0 20px 50px -10px rgba(240,185,11,.5),0 0 0 12px rgba(240,185,11,.08);animation:coinFloat 3s ease-in-out infinite}
-.vip-lock .vip-badge{display:inline-block;background:linear-gradient(135deg,rgba(246,70,93,.2),rgba(246,70,93,.05));color:var(--rd);border:1px solid rgba(246,70,93,.4);padding:6px 16px;border-radius:20px;font-size:.72rem;font-weight:900;margin-bottom:16px;letter-spacing:.5px}
-.vip-lock .vip-title{font-size:1.5rem;font-weight:900;color:var(--g);margin-bottom:12px;letter-spacing:-.5px;line-height:1.3}
-.vip-lock .vip-desc{color:var(--mt);font-size:.9rem;line-height:1.8;margin-bottom:26px;max-width:420px;margin-left:auto;margin-right:auto}
+.vip-lock .vip-icon{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#0b0e11;margin:0 auto 12px;box-shadow:0 12px 28px -8px rgba(240,185,11,.5),0 0 0 8px rgba(240,185,11,.08);animation:coinFloat 3s ease-in-out infinite}
+.vip-lock .vip-badge{display:inline-block;background:linear-gradient(135deg,rgba(246,70,93,.2),rgba(246,70,93,.05));color:var(--rd);border:1px solid rgba(246,70,93,.4);padding:3px 11px;border-radius:14px;font-size:.63rem;font-weight:900;margin-bottom:10px;letter-spacing:.4px}
+.vip-lock .vip-title{font-size:1.05rem;font-weight:900;color:var(--g);margin-bottom:7px;letter-spacing:-.3px;line-height:1.3}
+.vip-lock .vip-desc{color:var(--mt);font-size:.75rem;line-height:1.6;margin-bottom:16px;max-width:340px;margin-left:auto;margin-right:auto}
 .vip-lock .vip-desc b{color:var(--tx);font-weight:800}
-.vip-lock .vip-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px;max-width:420px;margin-left:auto;margin-right:auto;text-align:right}
-.vip-lock .vip-feature{background:rgba(240,185,11,.06);border:1px solid rgba(240,185,11,.2);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:9px;font-size:.82rem;font-weight:700;color:var(--tx)}
-.vip-lock .vip-feature i{color:var(--g);font-size:.95rem;flex-shrink:0}
-.vip-lock .vip-cta{background:linear-gradient(135deg,var(--g),var(--g2));color:#0b0e11;border:none;padding:16px 42px;border-radius:14px;font-weight:900;font-size:1.05rem;cursor:pointer;font-family:'Cairo',sans-serif;display:inline-flex;align-items:center;gap:10px;box-shadow:0 14px 35px -10px rgba(240,185,11,.6);transition:.25s}
-.vip-lock .vip-cta:hover{transform:translateY(-3px);box-shadow:0 20px 45px -10px rgba(240,185,11,.8)}
+.vip-lock .vip-features{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:16px;max-width:340px;margin-left:auto;margin-right:auto;text-align:right}
+.vip-lock .vip-feature{background:rgba(240,185,11,.06);border:1px solid rgba(240,185,11,.2);border-radius:9px;padding:7px 10px;display:flex;align-items:center;gap:6px;font-size:.68rem;font-weight:700;color:var(--tx);line-height:1.3}
+.vip-lock .vip-feature i{color:var(--g);font-size:.78rem;flex-shrink:0}
+.vip-lock .vip-cta{background:linear-gradient(135deg,var(--g),var(--g2));color:#0b0e11;border:none;padding:12px 30px;border-radius:11px;font-weight:900;font-size:.88rem;cursor:pointer;font-family:'Cairo',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:0 10px 24px -8px rgba(240,185,11,.6);transition:.25s}
+.vip-lock .vip-cta:hover{transform:translateY(-2px);box-shadow:0 14px 30px -8px rgba(240,185,11,.8)}
 .vip-lock .vip-cta:active{transform:translateY(-1px)}
-.vip-lock .vip-price-hint{margin-top:14px;font-size:.78rem;color:var(--mt);font-weight:600}
+.vip-lock .vip-cta i{font-size:.9rem}
+.vip-lock .vip-price-hint{margin-top:10px;font-size:.68rem;color:var(--mt);font-weight:600;line-height:1.5}
 .vip-lock .vip-price-hint b{color:var(--g);font-weight:900;direction:ltr;display:inline-block}
-@media(max-width:480px){.vip-lock .vip-features{grid-template-columns:1fr}.vip-lock .vip-icon{width:80px;height:80px;font-size:2rem}.vip-lock .vip-title{font-size:1.2rem}.vip-lock .vip-cta{padding:14px 32px;font-size:.95rem}}
+@media(max-width:480px){
+  .vip-lock{padding:22px 16px 18px;max-width:100%}
+  .vip-lock .vip-features{grid-template-columns:1fr;gap:6px}
+  .vip-lock .vip-icon{width:54px;height:54px;font-size:1.35rem;margin-bottom:10px}
+  .vip-lock .vip-title{font-size:.95rem}
+  .vip-lock .vip-desc{font-size:.72rem;margin-bottom:14px}
+  .vip-lock .vip-cta{padding:11px 26px;font-size:.84rem;width:100%}
+}
 
-/* ============ Subscribe Banner (الصفحة الرئيسية) ============ */
-.sub-banner{position:relative;margin-top:28px;background:linear-gradient(145deg,#1a1c24,#0f1215);border:2px solid rgba(240,185,11,.4);border-radius:24px;padding:30px 24px;max-width:620px;margin-left:auto;margin-right:auto;overflow:hidden;box-shadow:0 25px 60px -25px rgba(240,185,11,.25)}
-.sub-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--g),var(--g2),var(--g),transparent)}
+/* ============ Subscribe Banner (الصفحة الرئيسية) — مقاسات مصغّرة ============ */
+.sub-banner{position:relative;margin-top:20px;background:linear-gradient(145deg,#1a1c24,#0f1215);border:2px solid rgba(240,185,11,.4);border-radius:18px;padding:20px 16px;max-width:480px;margin-left:auto;margin-right:auto;overflow:hidden;box-shadow:0 18px 40px -20px rgba(240,185,11,.22)}
+.sub-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--g),var(--g2),var(--g),transparent)}
 .sub-banner::after{content:'';position:absolute;top:-40%;right:-40%;width:80%;height:180%;background:radial-gradient(circle,rgba(240,185,11,.1) 0%,transparent 60%);pointer-events:none}
 .sub-banner>*{position:relative;z-index:1}
-.sub-banner .sb-top{text-align:center;margin-bottom:20px}
-.sub-banner .sb-icon{width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;font-size:2rem;color:#0b0e11;margin:0 auto 14px;box-shadow:0 12px 30px -6px rgba(240,185,11,.5);animation:coinFloat 3s ease-in-out infinite}
-.sub-banner .sb-title{font-size:1.3rem;font-weight:900;color:var(--g);margin-bottom:8px;line-height:1.3}
-.sub-banner .sb-desc{color:var(--mt);font-size:.87rem;line-height:1.7;max-width:430px;margin:0 auto}
+.sub-banner .sb-top{text-align:center;margin-bottom:14px}
+.sub-banner .sb-icon{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#0b0e11;margin:0 auto 10px;box-shadow:0 10px 22px -6px rgba(240,185,11,.5);animation:coinFloat 3s ease-in-out infinite}
+.sub-banner .sb-title{font-size:1rem;font-weight:900;color:var(--g);margin-bottom:6px;line-height:1.3}
+.sub-banner .sb-desc{color:var(--mt);font-size:.74rem;line-height:1.6;max-width:340px;margin:0 auto}
 .sub-banner .sb-desc b{color:var(--tx);font-weight:800}
-.sub-banner .sb-benefits{background:rgba(0,0,0,.3);border:1px solid rgba(240,185,11,.15);border-radius:14px;padding:16px 18px;margin-bottom:22px;display:flex;flex-direction:column;gap:10px}
-.sub-banner .sb-benefit{display:flex;align-items:center;gap:11px;font-size:.85rem;color:var(--tx);font-weight:600;line-height:1.5}
-.sub-banner .sb-benefit i{color:var(--gr);font-size:.95rem;flex-shrink:0}
-.sub-banner .sb-plans{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:480px){.sub-banner .sb-plans{grid-template-columns:1fr;gap:10px}.sub-banner{padding:24px 18px}}
-.sub-banner .sb-plan{background:linear-gradient(145deg,#1c1f26,#15181e);border:2px solid var(--bd);border-radius:16px;padding:20px 14px;cursor:pointer;transition:.25s;text-align:center;font-family:'Cairo',sans-serif;color:var(--tx);position:relative;overflow:hidden}
-.sub-banner .sb-plan:hover{border-color:var(--g);transform:translateY(-4px);box-shadow:0 15px 35px -12px rgba(240,185,11,.35)}
+.sub-banner .sb-benefits{background:rgba(0,0,0,.3);border:1px solid rgba(240,185,11,.15);border-radius:11px;padding:11px 13px;margin-bottom:14px;display:flex;flex-direction:column;gap:7px}
+.sub-banner .sb-benefit{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--tx);font-weight:600;line-height:1.45}
+.sub-banner .sb-benefit i{color:var(--gr);font-size:.78rem;flex-shrink:0}
+.sub-banner .sb-plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:480px){.sub-banner .sb-plans{grid-template-columns:1fr;gap:8px}.sub-banner{padding:18px 14px;margin-top:18px}}
+.sub-banner .sb-plan{background:linear-gradient(145deg,#1c1f26,#15181e);border:2px solid var(--bd);border-radius:13px;padding:13px 10px;cursor:pointer;transition:.25s;text-align:center;font-family:'Cairo',sans-serif;color:var(--tx);position:relative;overflow:hidden}
+.sub-banner .sb-plan:hover{border-color:var(--g);transform:translateY(-3px);box-shadow:0 12px 25px -10px rgba(240,185,11,.35)}
 .sub-banner .sb-plan.premium{background:linear-gradient(145deg,rgba(139,92,246,.12),rgba(139,92,246,.02));border-color:rgba(139,92,246,.45)}
-.sub-banner .sb-plan.premium:hover{border-color:#8B5CF6;box-shadow:0 15px 35px -12px rgba(139,92,246,.45)}
-.sub-banner .sb-plan .sp-icon{font-size:2.2rem;margin-bottom:8px;line-height:1;display:block}
-.sub-banner .sb-plan .sp-name{font-weight:900;font-size:.95rem;margin-bottom:8px;color:var(--tx)}
+.sub-banner .sb-plan.premium:hover{border-color:#8B5CF6;box-shadow:0 12px 25px -10px rgba(139,92,246,.45)}
+.sub-banner .sb-plan .sp-icon{font-size:1.4rem;margin-bottom:5px;line-height:1;display:block}
+.sub-banner .sb-plan .sp-name{font-weight:900;font-size:.78rem;margin-bottom:5px;color:var(--tx)}
 .sub-banner .sb-plan.premium .sp-name{color:#C4B5FD}
-.sub-banner .sb-plan .sp-price{font-size:1.5rem;font-weight:900;color:var(--g);direction:ltr;margin-bottom:3px;line-height:1}
+.sub-banner .sb-plan .sp-price{font-size:1.15rem;font-weight:900;color:var(--g);direction:ltr;margin-bottom:2px;line-height:1}
 .sub-banner .sb-plan.premium .sp-price{color:#C4B5FD}
-.sub-banner .sb-plan .sp-duration{font-size:.72rem;color:var(--mt);margin-bottom:6px;font-weight:600}
-.sub-banner .sb-plan .sp-badge{display:inline-block;background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(139,92,246,.15));color:#C4B5FD;font-size:.63rem;font-weight:900;padding:4px 12px;border-radius:10px;margin-top:6px;border:1px solid rgba(139,92,246,.4)}
-.sub-banner .sb-plan .sp-cta{margin-top:10px;font-size:.72rem;color:var(--g);font-weight:800;display:flex;align-items:center;justify-content:center;gap:5px}
+.sub-banner .sb-plan .sp-duration{font-size:.64rem;color:var(--mt);margin-bottom:4px;font-weight:600}
+.sub-banner .sb-plan .sp-badge{display:inline-block;background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(139,92,246,.15));color:#C4B5FD;font-size:.56rem;font-weight:900;padding:3px 9px;border-radius:8px;margin-top:4px;border:1px solid rgba(139,92,246,.4)}
+.sub-banner .sb-plan .sp-cta{margin-top:8px;font-size:.66rem;color:var(--g);font-weight:800;display:flex;align-items:center;justify-content:center;gap:4px}
 .sub-banner .sb-plan.premium .sp-cta{color:#C4B5FD}
 
 /* ============ Admin Cache Tools ============ */
@@ -654,7 +662,7 @@ label.lb{display:block;color:var(--mt);font-size:.82rem;margin-bottom:6px;font-w
 <div id="mod"><div class="mbx" id="mbx"></div></div>
 <div id="tst"></div>
 <script>
-const APP_VERSION = '2026.09.30.3700';
+const APP_VERSION = '2026.09.30.3800';
 
 setTimeout(()=>{try{const b=document.getElementById('bootLoader');if(b){b.classList.add('out');setTimeout(()=>{try{b.remove()}catch(e){}},450)}}catch(e){}},3000);
 
@@ -964,11 +972,7 @@ R.home=async c=>{
   let adminMsgs=[];
   try{const {data}=await sb.from('admin_messages').select('*').eq('user_id',CU.id).eq('is_read',false).order('created_at',{ascending:false});if(data)adminMsgs=data;}catch(e){}
   const msgsHTML = adminMsgs.map(m=>`<div class="msg-banner ${m.type==='info'?'msg-info':''}" data-msg-id="${m.id}"><div class="msg-head"><div class="msg-icon"><i class="fas ${m.type==='warning'?'fa-exclamation-triangle':'fa-info-circle'}"></i></div><div style="flex:1"><div class="msg-title">${esc(m.title||'رسالة من الإدارة')}</div></div></div><div class="msg-body">${esc(m.body||'')}</div><div class="msg-time"><span><i class="fas fa-clock"></i> ${fmtTime(m.created_at)}</span><div class="msg-actions"><button class="reply-btn" data-reply="${m.id}"><i class="fas fa-reply"></i> رد</button><button class="dismiss-btn" data-dismiss="${m.id}"><i class="fas fa-check"></i> تم</button></div></div></div>`).join('');
-  
-  // ✅ بطاقة اختيار الفائز تظهر للأدمن فقط
   const winnerCard = CU.role==='admin' ? `<a class="gic unlocked" data-g="winner"><div class="icn"><i class="fas fa-trophy"></i></div><div class="txt"><div class="ttl">اختيار الفائز</div><div class="ds">سحب عشوائي من التعليقات</div></div></a>` : '';
-  
-  // ✅ بطاقة الاشتراك الجديدة الاحترافية
   const trialEgp=Math.round(SUB_PRICE_USD*USD_RATE_EGP);
   const permEgp=Math.round(SUB_PRICE_USD_PERMANENT*USD_RATE_EGP);
   const subSection = !s ? `
@@ -1235,14 +1239,11 @@ async function initRecoHighs(list){
     const times=recos.map(r=>safeCreatedMs(r.created_at)).filter(t=>t>0);
     if(!times.length)return;
     const earliest=Math.min(...times);
-    
-    // ✅ استخدام الكاش لتسريع التحميل
     let arr=null;
     const cached=getKlinesCache(sym);
     if(cached && cached.e <= earliest && cached.a && cached.a.length){
       arr=cached.a;
     }
-    
     if(!arr){
       try{
         const r=await binanceFetch({endpoint:'klines',symbol:sym+'USDT',interval:'1h',startTime:String(earliest),limit:'1000'});
@@ -1253,7 +1254,6 @@ async function initRecoHighs(list){
         arr=fullArr;
       }catch(e){return}
     }
-    
     recos.forEach(reco=>{
       const createdMs=safeCreatedMs(reco.created_at);
       if(!createdMs)return;
@@ -1275,7 +1275,6 @@ async function initRecoHighs(list){
 
 R.recs=async c=>{
   if(!isSub()){
-    // ✅ تصميم احترافي لصفحة "للمشتركين فقط"
     c.innerHTML=`<h2 class="pt"><i class="fas fa-chart-line"></i> التوصيات</h2>
     <div class="vip-lock">
       <div class="vip-icon"><i class="fas fa-crown"></i></div>
@@ -1514,7 +1513,6 @@ async function admPush(b){
   };
 }
 
-/* ✅ تبويب مسح الكاش */
 async function admCache(b){
   b.innerHTML=`
     <div class="settings-block">
@@ -1559,7 +1557,6 @@ async function admCache(b){
       toast('فشل المسح: '+e.message,'er');
     }
   };
-  // Stats
   try{
     const cacheNames = ('caches' in window) ? await caches.keys() : [];
     const regs = ('serviceWorker' in navigator) ? await navigator.serviceWorker.getRegistrations() : [];
