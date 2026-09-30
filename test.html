@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تشخيص Blo Trade</title>
+<style>
+body{background:#0B0E11;color:#EAECEF;font-family:system-ui,sans-serif;padding:20px;line-height:1.7}
+h1{color:#F0B90B;font-size:1.3rem;margin-bottom:20px}
+.box{background:#1E2329;border:1px solid #2b3139;border-radius:12px;padding:16px;margin-bottom:12px}
+.ok{color:#0ECB81;font-weight:900}
+.err{color:#F6465D;font-weight:900}
+.warn{color:#F0B90B;font-weight:900}
+pre{background:#0B0E11;padding:10px;border-radius:8px;font-size:.75rem;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin-top:8px}
+button{background:#F0B90B;color:#0B0E11;border:none;padding:14px 24px;border-radius:10px;font-weight:900;font-size:1rem;font-family:inherit;width:100%;margin-top:12px}
+</style>
+</head>
+<body>
+
+<h1>🔍 تشخيص Blo Trade 24</h1>
+<div id="log"></div>
+
+<script>
+const PROXY_URL = 'https://wfcizftmcclhnzgvukuy.supabase.co/functions/v1/prices-proxy';
+const log = (msg) => {
+  document.getElementById('log').innerHTML += '<div class="box">' + msg + '</div>';
+  console.log(msg.replace(/<[^>]+>/g,''));
+};
+
+(async () => {
+  // Test 1: Is proxy reachable?
+  log('<b>اختبار 1:</b> الوصول للـ Proxy...');
+  try {
+    const url = PROXY_URL + '?endpoint=ticker24hr&symbols=' + encodeURIComponent('["APTUSDT","BTCUSDT"]');
+    log('<b>الرابط:</b><pre>' + url + '</pre>');
+    
+    const t0 = Date.now();
+    const r = await fetch(url);
+    const elapsed = Date.now() - t0;
+    const text = await r.text();
+    
+    log('<b>الحالة (Status):</b> <span class="' + (r.ok ? 'ok' : 'err') + '">' + r.status + '</span>');
+    log('<b>الوقت:</b> ' + elapsed + 'ms');
+    log('<b>الرد (أول 500 حرف):</b><pre>' + text.substring(0, 500).replace(/</g,'&lt;') + '</pre>');
+    
+    if (r.ok) {
+      try {
+        const data = JSON.parse(text);
+        if (Array.isArray(data) && data.length > 0 && data[0].symbol) {
+          log('<b>النتيجة:</b> <span class="ok">✅ Proxy شغال تمام! رجع ' + data.length + ' عملة.</span>');
+        } else {
+          log('<b>النتيجة:</b> <span class="warn">⚠️ الرد مش بصيغة صحيحة</span>');
+        }
+      } catch(e) {
+        log('<b>النتيجة:</b> <span class="err">❌ فشل تفسير JSON: ' + e.message + '</span>');
+      }
+    } else {
+      log('<b>النتيجة:</b> <span class="err">❌ الـ Proxy رجع خطأ</span>');
+    }
+  } catch(e) {
+    log('<b class="err">❌ فشل الاتصال:</b> ' + e.message);
+    log('<b>ملاحظة:</b> لو الرسالة فيها "Failed to fetch" → عندك مشكلة CORS أو الشبكة.');
+  }
+  
+  // Test 2: Is Binance direct reachable?
+  log('<b>اختبار 2:</b> الوصول المباشر لـ Binance (للمقارنة)...');
+  try {
+    const r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + encodeURIComponent('["BTCUSDT"]'));
+    log('<b>الحالة:</b> <span class="' + (r.ok ? 'ok' : 'err') + '">' + r.status + '</span>');
+    if (r.ok) {
+      log('<span class="ok">✅ Binance مباشر شغال (يعني انت مش من أمريكا)</span>');
+    } else if (r.status === 451) {
+      log('<span class="err">❌ Binance محجوب في بلدك (code 451) — ده سبب مشكلة VPN أمريكا</span>');
+    }
+  } catch(e) {
+    log('<span class="err">❌ فشل: ' + e.message + '</span>');
+  }
+  
+  // Test 3: Check APP_VERSION in main site
+  log('<b>اختبار 3:</b> هل النسخة الجديدة من الموقع محمّلة؟');
+  try {
+    const r = await fetch('https://abu-hanin.github.io/?v=' + Date.now());
+    const html = await r.text();
+    const hasNewFn = html.indexOf('binanceFetch') !== -1;
+    const hasProxy = html.indexOf('prices-proxy') !== -1;
+    const versionMatch = html.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+    
+    log('<b>APP_VERSION على GitHub:</b> ' + (versionMatch ? versionMatch[1] : 'غير موجود'));
+    log('<b>فيها binanceFetch؟</b> <span class="' + (hasNewFn ? 'ok' : 'err') + '">' + (hasNewFn ? '✅ نعم' : '❌ لا — الكود القديم!') + '</span>');
+    log('<b>فيها prices-proxy؟</b> <span class="' + (hasProxy ? 'ok' : 'err') + '">' + (hasProxy ? '✅ نعم' : '❌ لا') + '</span>');
+    
+    if (!hasNewFn || !hasProxy) {
+      log('<span class="err"><b>السبب:</b> الملف على GitHub لسه نسخة قديمة!</span>');
+    } else {
+      log('<span class="ok"><b>الموقع على GitHub محدّث صح</b> — المشكلة إذاً في الكاش عند المتصفح</span>');
+    }
+  } catch(e) {
+    log('<span class="err">فشل: ' + e.message + '</span>');
+  }
+  
+  // Test 4: Browser capabilities
+  log('<b>اختبار 4:</b> معلومات المتصفح...');
+  log('<b>User Agent:</b><pre>' + navigator.userAgent + '</pre>');
+  log('<b>Online?</b> ' + (navigator.onLine ? '✅' : '❌'));
+  log('<b>Service Worker مدعوم؟</b> ' + ('serviceWorker' in navigator ? '✅' : '❌'));
+  
+  if ('serviceWorker' in navigator) {
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      log('<b>عدد Service Workers مسجّلين:</b> ' + regs.length);
+      regs.forEach((r, i) => {
+        log('SW #' + (i+1) + ': ' + (r.active ? r.active.scriptURL : 'غير نشط'));
+      });
+      if (regs.length > 0) {
+        log('<span class="warn">⚠️ فيه Service Workers مسجّلين — ممكن يكونوا بيخدموا نسخة قديمة من الكاش</span>');
+      }
+    } catch(e) {
+      log('خطأ في قراءة SW: ' + e.message);
+    }
+  }
+})();
+
+// Force reload button
+setTimeout(() => {
+  const btn = document.createElement('button');
+  btn.textContent = '🗑️ امسح الكاش وأعد التحميل';
+  btn.onclick = async () => {
+    try {
+      // Unregister all SW
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const r of regs) await r.unregister();
+      }
+      // Clear all caches
+      if ('caches' in window) {
+        const names = await caches.keys();
+        for (const n of names) await caches.delete(n);
+      }
+      // Clear localStorage
+      localStorage.clear();
+      // Clear sessionStorage
+      sessionStorage.clear();
+      alert('✅ تم المسح! جاري إعادة التحميل...');
+      location.replace('https://abu-hanin.github.io/?v=' + Date.now());
+    } catch(e) {
+      alert('خطأ: ' + e.message);
+    }
+  };
+  document.body.appendChild(btn);
+}, 100);
+</script>
+
+</body>
+</html>
