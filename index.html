@@ -625,16 +625,14 @@ const SUPABASE_URL='https://wfcizftmcclhnzgvukuy.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmY2l6ZnRtY2NsaG56Z3Z1a3V5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNDI3ODYsImV4cCI6MjEwNDYxODc4Nn0.HZ852U2kZzHkXQveGEWT0qLra-vsVOwZOsT1Zl8nQ80';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 
-/* ===== Proxy لدعم Binance من جميع الدول ===== */
+/* ============ Proxy لدعم Binance من جميع الدول ============ */
 const PROXY_URL = SUPABASE_URL + '/functions/v1/prices-proxy';
 async function binanceFetch(params){
-  // حاول عبر Proxy أولاً (يعمل في كل الدول)
   try{
     const qs = new URLSearchParams(params).toString();
     const r = await fetch(PROXY_URL + '?' + qs);
     if(r.ok) return r;
   }catch(e){}
-  // Fallback: Binance مباشر (يعمل خارج أمريكا)
   try{
     if(params.endpoint==='ticker24hr'){
       const url = params.symbols
@@ -649,6 +647,7 @@ async function binanceFetch(params){
   }catch(e){}
   return null;
 }
+/* ======================================================= */
 
 const TG_TOKEN='8848036284:AAGVbG_UylFYsYagJM56Fg_kIqaDdiT9AuM';
 const TG_CHAT='6242313550';
