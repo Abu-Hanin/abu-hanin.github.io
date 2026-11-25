@@ -1122,7 +1122,7 @@ body{background-attachment:scroll}
 <script>window.supabase||document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"><\/script>');</script>
 <script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"><\/script>');</script>
 <script>
-const APP_VERSION='2026.10.30.3';
+const APP_VERSION='2026.11.25.1';
 (function forceUpdate(){
   try{
     const stored=localStorage.getItem('blo_app_version');
@@ -2172,12 +2172,27 @@ window.admApproveDep=async function(id){
 };
 window.admRejectDep=async function(id){if(!await smConfirm('رفض هذا الإيداع؟','',true))return;const {data:d}=await sb.from('deposits').select('*').eq('id',id).single();if(!d)return;await sb.from('deposits').update({status:'rejected',processed_at:new Date().toISOString()}).eq('id',id);try{await sb.from('notifications').insert({title:'❌ تم رفض إيداعك',body:'يرجى التواصل مع الدعم لمزيد من المعلومات',type:'deposit_reject',is_public:false,user_id:d.user_id});await sb.from('chat_messages').insert({user_id:d.user_id,sender:'admin',body:'❌ تم رفض إيداعك. يرجى التواصل معنا لمعرفة السبب.',is_read:false})}catch(e){}toast('تم الرفض','er');admRenderBody()};
 
+/* ===== المساعد الذكي: تشغيل / إيقاف من لوحة الأدمن (الصلاحية بتتأكد على السيرفر) ===== */
+async function engCard(st){
+  const box=$('#engCard');if(!box)return;
+  if(!st){box.innerHTML='<div class="adm-card"><div class="ac-b" style="text-align:center;color:var(--mt)"><i class="fas fa-spinner fa-spin"></i></div></div>';
+    const {data,error}=await sb.rpc('blo_engine_status');if(error){box.innerHTML='';return}st=data}
+  const on=!!st.on,last=st.last_scan?timeAgo(new Date(Number(st.last_scan)).toISOString()):'—';
+  box.innerHTML=`<div class="adm-card"><div class="ac-h"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.5rem">🤖</span><div><div class="ac-t">المساعد الذكي</div><div class="ac-s">بيفحص السوق كل 15 دقيقة ويبعتلك الفرص على التليجرام</div></div></div><span class="chip ${on?'ok':'bad'}">${on?'● شغال':'● موقوف'}</span></div>
+  <div class="ac-b"><div class="ac-r"><span>آخر فحص</span><span class="v">${esc(on?last:'—')}</span></div><div class="ac-r"><span>فرص آخر 24 ساعة</span><span class="v">${Number(st.sent_24h)||0}</span></div><div class="ac-r"><span>اتنشر آخر 7 أيام</span><span class="v">${Number(st.published_7d)||0}</span></div></div>
+  <div class="ac-a"><button class="${on?'btn-p btn-d':'btn-p'}" id="engToggle"><i class="fas fa-${on?'power-off':'play'}"></i> ${on?'إيقاف المساعد':'تشغيل المساعد'}</button></div></div>`;
+  $('#engToggle').onclick=async()=>{const btn=$('#engToggle');btn.disabled=true;btn.innerHTML='<span class="ldr"></span>';
+    const {data,error}=await sb.rpc('blo_engine_set',{p_on:!on});
+    if(error){toast('حصلت مشكلة، جرّب تاني','er');engCard();return}
+    toast(data.on?'✅ المساعد اشتغل':'⏸ المساعد اتوقف','ok');engCard(data)};
+}
 async function admRecs(b){
   b.innerHTML=spin;
   const {data,error}=await sb.from('recommendations').select('*').order('created_at',{ascending:false});
   if(error){b.innerHTML='<div class="es"><p>خطأ</p></div>';return}
-  b.innerHTML=`<button class="btn-p btn-w" id="addRecoBtn" style="margin-bottom:14px"><i class="fas fa-plus"></i> إضافة توصية جديدة</button><div id="recoAdminList" class="adm-grid"></div>`;
+  b.innerHTML=`<div id="engCard" style="margin-bottom:14px"></div><button class="btn-p btn-w" id="addRecoBtn" style="margin-bottom:14px"><i class="fas fa-plus"></i> إضافة توصية جديدة</button><div id="recoAdminList" class="adm-grid"></div>`;
   $('#addRecoBtn').onclick=addRecoModal;
+  engCard();
   const list=$('#recoAdminList');if(!data||!data.length){list.innerHTML='<div class="es" style="grid-column:1/-1"><i class="fas fa-inbox ei"></i><p>لا توجد توصيات</p></div>';return}
   list.innerHTML=data.map(r=>`<div class="adm-card" style="${r.hidden?'opacity:.55':''}"><div class="ac-h"><div style="display:flex;align-items:center;gap:10px;min-width:0">${coinBadge(r.symbol)}<div><div class="ac-t ltr">${esc(String(r.symbol).toUpperCase())}<span style="color:var(--mt);font-size:.72rem">/USDT</span></div><div class="ac-s">📅 ${fmtDateOnly(r.created_at)}</div></div></div>${r.hidden?'<span class="chip bad">👁 مخفية</span>':''}</div><div class="ac-b"><div class="ac-r"><span>📍 الدخول</span><span class="v">${esc(r.entry||'-')}</span></div><div class="ac-r"><span>🛑 الوقف</span><span class="v">${esc(r.stop_loss||'-')}</span></div><div class="ac-r"><span>🎯 هدف 1</span><span class="v">${esc(r.target1||'-')}</span></div><div class="ac-r"><span>🎯 هدف 2</span><span class="v">${esc(r.target2||'-')}</span></div><div class="ac-r"><span>🎯 هدف 3</span><span class="v">${esc(r.target3||'-')}</span></div></div><div class="ac-a"><button class="btn-g" data-recoact="edit" data-rid="${esc(r.id)}"><i class="fas fa-pen"></i> تعديل</button><button class="btn-g" data-recoact="toggle" data-rid="${esc(r.id)}" data-hidden="${r.hidden}"><i class="fas fa-${r.hidden?'eye':'eye-slash'}"></i> ${r.hidden?'إظهار':'إخفاء'}</button><button class="btn-p btn-d" data-recoact="del" data-rid="${esc(r.id)}" style="max-width:56px"><i class="fas fa-trash"></i></button></div></div>`).join('');
   list.querySelectorAll('[data-recoact]').forEach(btn=>btn.onclick=()=>{const a=btn.dataset.recoact;if(a==='edit')window.editReco(btn.dataset.rid);else if(a==='toggle')window.toggleRecoHidden(btn.dataset.rid,btn.dataset.hidden==='true');else window.delReco(btn.dataset.rid)});
